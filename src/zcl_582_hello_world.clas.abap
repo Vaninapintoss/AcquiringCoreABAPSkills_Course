@@ -16,9 +16,26 @@ CLASS zcl_582_hello_world IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.
-*    out->write( 'Hello World!' ).
-*_________________________________________________________________________________________________
 
+*******************************************************************
+*
+* HELLO WORLD
+*
+*******************************************************************
+
+*    out->write( 'Hello World!' ).
+
+
+
+
+
+
+
+*******************************************************************
+*
+* DATA OBJECTS
+*
+*******************************************************************
 
 * Data Objects with Built-in Types
 **********************************************************************
@@ -44,7 +61,16 @@ CLASS zcl_582_hello_world IMPLEMENTATION.
 *    out->write(   variable ).
 *    out->write(  '---------' ).
 
-*_________________________________________________________________________________________________
+
+
+
+
+
+*******************************************************************
+*
+* DATA TYPES
+*
+*******************************************************************
 
 * Example 1: Local Types
 **********************************************************************
@@ -98,8 +124,19 @@ CLASS zcl_582_hello_world IMPLEMENTATION.
     "uncomment this line to see syntax error (no number literal with digits)
 *    out->write(  12345.67                  ).
 
-*_________________________________________________________________________________________________
 
+
+
+
+
+
+
+
+*******************************************************************
+*
+* CALCULATIONS
+*
+*******************************************************************
 
 ** Declarations
 ***********************************************************************
@@ -131,8 +168,20 @@ CLASS zcl_582_hello_world IMPLEMENTATION.
 *
 **    out->write( result ).
 
-*_________________________________________________________________________________________________
 
+
+
+
+
+
+
+
+
+*******************************************************************
+*
+* STRING TEMPLATES
+*
+*******************************************************************
 
 ** Declarations
 ***********************************************************************
@@ -185,8 +234,22 @@ CLASS zcl_582_hello_world IMPLEMENTATION.
 *
 *    out->write( text ).
 
-*_________________________________________________________________________________________________
 
+
+
+
+
+
+
+
+
+
+
+*******************************************************************
+*
+* CONTROL STATEMENTS
+*
+*******************************************************************
 
 * Declarations
 **********************************************************************
@@ -244,8 +307,20 @@ CLASS zcl_582_hello_world IMPLEMENTATION.
 *    ENDCASE.
 *
 
-*_________________________________________________________________________________________________
 
+
+
+
+
+
+
+
+
+*******************************************************************
+*
+* EXCEPTION HANDLING
+*
+*******************************************************************
 
 ** Declarations
 ***********************************************************************
@@ -332,8 +407,20 @@ CLASS zcl_582_hello_world IMPLEMENTATION.
 *        out->write( |Error: Itab contains less than { 2 / c_char } rows| ).
 *    ENDTRY.
 
-*_________________________________________________________________________________________________
 
+
+
+
+
+
+
+
+
+*******************************************************************
+*
+* LOOPING STATEMENTS
+*
+*******************************************************************
 
 ** Declarations
 ***********************************************************************
@@ -377,88 +464,173 @@ CLASS zcl_582_hello_world IMPLEMENTATION.
 *
 *    ENDDO.
 
-*_________________________________________________________________________________________________
 
 
 
-* Declarations
+
+
+
+
+
+
+
+
+*******************************************************************
+*
+* INTERNAL TABLES
+*
+*******************************************************************
+
+*
+** Declarations
+***********************************************************************
+*
+*    " Internal tables
+*    DATA numbers TYPE TABLE OF i.
+*
+*    "Table type (local)
+*    TYPES tt_strings TYPE TABLE OF string.
+*    DATA texts1      TYPE tt_strings.
+*
+*    " Table type (global)
+*    DATA texts2 TYPE string_table.
+*
+*    " work areas
+*    DATA number TYPE i VALUE 1234.
+*    DATA text TYPE string.
+*
+** Example 1: APPEND
+***********************************************************************
+*
+*    APPEND 4711       TO numbers.
+*    APPEND number     TO numbers.
+*    APPEND 2 * number TO numbers.
+*
+*    out->write(  `-----------------` ).
+*    out->write(  `Example 1: APPEND` ).
+*    out->write(  `-----------------` ).
+*
+*    out->write( numbers ).
+*
+** Example 2: CLEAR
+***********************************************************************
+*
+*    CLEAR numbers.
+*
+*    out->write(  `----------------` ).
+*    out->write(  `Example 2: CLEAR` ).
+*    out->write(  `----------------` ).
+*
+*    out->write( numbers ).
+*
+** Example 3: table expression
+***********************************************************************
+*    APPEND 4711       TO numbers.
+*    APPEND number     TO numbers.
+*    APPEND 2 * number TO numbers.
+*
+*    out->write(  `---------------------------` ).
+*    out->write(  `Example 3: Table Expression` ).
+*    out->write(  `---------------------------` ).
+*
+*    number = numbers[ 2 ] .
+*
+*    out->write( |Content of row 2: { number }|    ).
+*    "Direct use of expression in string template
+*    out->write( |Content of row 1: { numbers[ 1 ]  }| ).
+*
+** Example 4: LOOP ... ENDLOOP
+***********************************************************************
+*    out->write(  `---------------------------` ).
+*    out->write(  `Example 4: LOOP ... ENDLOOP` ).
+*    out->write(  `---------------------------` ).
+*
+*    LOOP AT numbers INTO number.
+*
+*      out->write( |Row: { sy-tabix } Content { number }| ).
+*
+*    ENDLOOP.
+*
+** Example 5: Inline declaration in LOOP ... ENDLOOP
+***********************************************************************
+*    out->write(  `-----------------------------` ).
+*    out->write(  `Example 5: Inline Declaration` ).
+*    out->write(  `-----------------------------` ).
+*
+*    LOOP AT numbers INTO DATA(number_inline).
+*      out->write( |Row: { sy-tabix } Content { number_inline }| ).
+*    ENDLOOP.
+
+
+
+
+
+
+*******************************************************************
+*
+* SELECT STATEMENT
+*
+*******************************************************************
+
+
+    DATA airport_from_id TYPE /DMO/airport_from_id.
+    DATA airport_to_id   TYPE /DMO/airport_to_id.
+
+    DATA airports TYPE TABLE OF /DMO/airport_from_id.
+
+* Example 1: Single field from Single Record
 **********************************************************************
+    SELECT SINGLE
+      FROM /dmo/connection
+      FIELDS airport_from_id
+      WHERE carrier_id    = 'LH'
+        AND connection_id = '0400'
+        INTO @airport_from_id.
 
-    " Internal tables
-    DATA numbers TYPE TABLE OF i.
+    out->write( `----------`  ).
+    out->write( `Example 1:`  ).
 
-    "Table type (local)
-    TYPES tt_strings TYPE TABLE OF string.
-    DATA texts1      TYPE tt_strings.
+    out->write( |Flight LH 400 departs from {  airport_from_id }.| ).
 
-    " Table type (global)
-    DATA texts2 TYPE string_table.
-
-    " work areas
-    DATA number TYPE i VALUE 1234.
-    DATA text TYPE string.
-
-* Example 1: APPEND
+* Example 2: Multiple Fields from Single Record
 **********************************************************************
+    SELECT SINGLE
+      FROM /dmo/connection
+      FIELDS airport_from_id, airport_to_id
+      WHERE carrier_id    = 'LH'
+        AND connection_id = '0400'
+        INTO (  @airport_from_id, @airport_to_id ).
 
-    APPEND 4711       TO numbers.
-    APPEND number     TO numbers.
-    APPEND 2 * number TO numbers.
+    out->write( `----------`  ).
+    out->write( `Example 2:`  ).
 
-    out->write(  `-----------------` ).
-    out->write(  `Example 1: APPEND` ).
-    out->write(  `-----------------` ).
+    out->write( |Flight LH 400 flies from {  airport_from_id } to { airport_to_id  }| ).
 
-    out->write( numbers ).
-
-* Example 2: CLEAR
+* Example 3: Empty Result and sy-subrc
 **********************************************************************
+    SELECT SINGLE
+      FROM /dmo/connection
+      FIELDS airport_from_id
+      WHERE carrier_id    = 'XX'
+        AND connection_id = '1234'
+        INTO @airport_from_id.
 
-    CLEAR numbers.
+    IF sy-subrc = 0.
 
-    out->write(  `----------------` ).
-    out->write(  `Example 2: CLEAR` ).
-    out->write(  `----------------` ).
+      out->write( `----------`  ).
+      out->write( `Example 3:`  ).
+      out->write( |Flight XX 1234 departs from {  airport_from_id }.| ).
 
-    out->write( numbers ).
+    ELSE.
 
-* Example 3: table expression
-**********************************************************************
-    APPEND 4711       TO numbers.
-    APPEND number     TO numbers.
-    APPEND 2 * number TO numbers.
+      out->write( `----------`  ).
+      out->write( `Example 3:`  ).
+      out->write( |There is no flight XX 1234, but still airport_from_id = {  airport_from_id }!| ).
 
-    out->write(  `---------------------------` ).
-    out->write(  `Example 3: Table Expression` ).
-    out->write(  `---------------------------` ).
+    ENDIF.
 
-    number = numbers[ 2 ] .
 
-    out->write( |Content of row 2: { number }|    ).
-    "Direct use of expression in string template
-    out->write( |Content of row 1: { numbers[ 1 ]  }| ).
 
-* Example 4: LOOP ... ENDLOOP
-**********************************************************************
-    out->write(  `---------------------------` ).
-    out->write(  `Example 4: LOOP ... ENDLOOP` ).
-    out->write(  `---------------------------` ).
-
-    LOOP AT numbers INTO number.
-
-      out->write( |Row: { sy-tabix } Content { number }| ).
-
-    ENDLOOP.
-
-* Example 5: Inline declaration in LOOP ... ENDLOOP
-**********************************************************************
-    out->write(  `-----------------------------` ).
-    out->write(  `Example 5: Inline Declaration` ).
-    out->write(  `-----------------------------` ).
-
-    LOOP AT numbers INTO DATA(number_inline).
-      out->write( |Row: { sy-tabix } Content { number_inline }| ).
-    ENDLOOP.
 
   ENDMETHOD.
 ENDCLASS.
