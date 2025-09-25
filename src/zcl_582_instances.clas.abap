@@ -108,40 +108,215 @@ CLASS zcl_582_instances IMPLEMENTATION.
 *******************************************************************
 
 
-    DATA connection  TYPE REF TO lcl_connection.
-    DATA connections  TYPE TABLE OF REF TO lcl_connection.
+*    DATA connection  TYPE REF TO lcl_connection.
+*    DATA connections  TYPE TABLE OF REF TO lcl_connection.
+*
+** Create Instance
+***********************************************************************
+*
+*    connection = NEW #(  ).
+*
+*    connection->set_attributes(
+*      EXPORTING
+*        i_carrier_id    = 'LH'
+*        i_connection_id = '0400'
+*    ).
+*
+*    APPEND connection TO connections.
+*
+** Calling Functional Method
+***********************************************************************
+*    " in a value assignment (with inline declaration for result)
+*    DATA(result) = connection->get_output( ).
+*
+*    " in logical expression
+*    IF connection->get_output(  ) IS NOT INITIAL.
+*
+*      " as operand in a statement
+*      LOOP AT connection->get_output(  ) INTO DATA(line).
+*
+*      ENDLOOP.
+*
+*      "  to supply input parameter of another method
+*      out->write( data = connection->get_output( )
+*                  name = `  ` ).
+*
+*    ENDIF.
 
-* Create Instance
+
+
+
+*******************************************************************
+*
+* DEFINE AND CALL METHODS
+*
+*******************************************************************
+
+*    DATA connection TYPE REF TO lcl_connection.
+*    DATA connections TYPE TABLE OF REF TO lcl_connection.
+*
+** First Instance
+***********************************************************************
+*    connection = NEW #(  ).
+*
+*    TRY.
+*        connection->set_attributes(
+*          EXPORTING
+*            i_carrier_id    = 'LH'
+*            i_connection_id = '0400'
+*        ).
+*
+**        connection->carrier_id    = 'LH'.
+**        connection->connection_id = '0400'.
+*
+*        APPEND connection TO connections.
+*
+*      CATCH cx_abap_invalid_value.
+*        out->write( `Method call failed` ).
+*    ENDTRY.
+*
+** Second instance
+***********************************************************************
+*
+*    connection = NEW #(  ).
+*
+*    TRY.
+*        connection->set_attributes(
+*          EXPORTING
+*            i_carrier_id    = 'AA'
+*            i_connection_id = '0017'
+*        ).
+*
+**        connection->carrier_id    = 'AA'.
+**        connection->connection_id = '0017'.
+*
+*        APPEND connection TO connections.
+*
+*      CATCH cx_abap_invalid_value.
+*        out->write( `Method call failed` ).
+*    ENDTRY.
+*
+** Third instance
+***********************************************************************
+*    connection = NEW #(  ).
+*
+*    TRY.
+*        connection->set_attributes(
+*          EXPORTING
+*            i_carrier_id    = 'SQ'
+*            i_connection_id = '0001'
+*        ).
+*
+**        connection->carrier_id    = 'SQ'.
+**        connection->connection_id = '0001'.
+*
+*        APPEND connection TO connections.
+*
+*      CATCH cx_abap_invalid_value.
+*        out->write( `Method call failed` ).
+*    ENDTRY.
+*
+*
+** Output
+***********************************************************************
+*
+*    LOOP AT connections INTO connection.
+*
+*      out->write( connection->get_output( ) ).
+*
+*    ENDLOOP.
+
+
+
+
+
+
+*******************************************************************
+*
+* FUNCTIONAL METHODS AND INLINE DECLARATIONS
+*
+*******************************************************************
+
+*    DATA connection TYPE REF TO lcl_connection.
+*    DATA connections TYPE TABLE OF REF TO lcl_connection.
+*
+** First Instance
+***********************************************************************
+*    connection = NEW #(  ).
+*
+*    connection->set_attributes(
+*      EXPORTING
+*        i_carrier_id    = 'LH'
+*        i_connection_id = '0400'
+*    ).
+*
+*    APPEND connection TO connections.
+
+* Second instance
 **********************************************************************
+*
+*******************************************************************
 
-    connection = NEW #(  ).
+*    DATA connection TYPE REF TO lcl_connection.
+*    DATA connections TYPE TABLE OF REF TO lcl_connection.
 
-    connection->set_attributes(
-      EXPORTING
-        i_carrier_id    = 'LH'
-        i_connection_id = '0400'
-    ).
-
-    APPEND connection TO connections.
-
-* Calling Functional Method
+* First Instance
 **********************************************************************
-    " in a value assignment (with inline declaration for result)
-    DATA(result) = connection->get_output( ).
+*    TRY.
+*    connection = NEW #(
+*                        i_carrier_id    = 'LH'
+*                        i_connection_id = '0400'
+*                      ).
+*
+**        connection->set_attributes(
+**          EXPORTING
+**            i_carrier_id    = 'LH'
+**            i_connection_id = '0400'
+**        ).
+*
+*        APPEND connection TO connections.
+*
+*      CATCH cx_abap_invalid_value.
+*        out->write( `Method call failed` ).
+*    ENDTRY.
 
-    " in logical expression
-    IF connection->get_output(  ) IS NOT INITIAL.
+* Second instance
+**********************************************************************
+*    TRY.
+*    connection = NEW #(
+*                        i_carrier_id    = 'AA'
+*                        i_connection_id = '0017'
+*                      ).
+*        APPEND connection TO connections.
+*
+*      CATCH cx_abap_invalid_value.
+*        out->write( `Method call failed` ).
+*    ENDTRY.
 
-      " as operand in a statement
-      LOOP AT connection->get_output(  ) INTO DATA(line).
+* Third instance
+**********************************************************************
+*    TRY.
+*    connection = NEW #(
+*                        i_carrier_id    = 'SQ'
+*                        i_connection_id = '0001'
+*                      ).
+*        APPEND connection TO connections.
+*
+*      CATCH cx_abap_invalid_value.
+*        out->write( `Method call failed` ).
+*    ENDTRY.
 
-      ENDLOOP.
+* Output
+**********************************************************************
+*    LOOP AT connections INTO connection.
+*      out->write( connection->get_output( ) ).
+*    ENDLOOP.
 
-      "  to supply input parameter of another method
-      out->write( data = connection->get_output( )
-                  name = `  ` ).
 
-    ENDIF.
+
+
+
+
 
 
   ENDMETHOD.
