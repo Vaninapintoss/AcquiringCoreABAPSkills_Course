@@ -94,97 +94,250 @@ CLASS zcl_582_complex_tables IMPLEMENTATION.
 ***********************************************************
 
 
-    TYPES: BEGIN OF st_connection,
-             carrier_id      TYPE /dmo/carrier_id,
-             connection_id   TYPE /dmo/connection_id,
-             airport_from_id TYPE /dmo/airport_from_id,
-             airport_to_id   TYPE /dmo/airport_to_id,
-             carrier_name    TYPE /dmo/carrier_name,
-           END OF st_connection.
-
-    TYPES tt_connections TYPE STANDARD TABLE OF   st_connection
-                              WITH NON-UNIQUE KEY carrier_id
-                                                  connection_id.
-
-    DATA connections TYPE tt_connections.
-
-    TYPES: BEGIN OF st_carrier,
-             carrier_id    TYPE /dmo/carrier_id,
-             carrier_name  TYPE /dmo/carrier_name,
-             currency_code TYPE /dmo/currency_code,
-           END OF st_carrier.
-
-    TYPES tt_carriers TYPE STANDARD TABLE OF st_carrier
-                          WITH NON-UNIQUE KEY carrier_id.
-
-    DATA carriers TYPE tt_carriers.
-
+*    TYPES: BEGIN OF st_connection,
+*             carrier_id      TYPE /dmo/carrier_id,
+*             connection_id   TYPE /dmo/connection_id,
+*             airport_from_id TYPE /dmo/airport_from_id,
+*             airport_to_id   TYPE /dmo/airport_to_id,
+*             carrier_name    TYPE /dmo/carrier_name,
+*           END OF st_connection.
+*
+*    TYPES tt_connections TYPE STANDARD TABLE OF   st_connection
+*                              WITH NON-UNIQUE KEY carrier_id
+*                                                  connection_id.
+*
+*    DATA connections TYPE tt_connections.
+*
+*    TYPES: BEGIN OF st_carrier,
+*             carrier_id    TYPE /dmo/carrier_id,
+*             carrier_name  TYPE /dmo/carrier_name,
+*             currency_code TYPE /dmo/currency_code,
+*           END OF st_carrier.
+*
+*    TYPES tt_carriers TYPE STANDARD TABLE OF st_carrier
+*                          WITH NON-UNIQUE KEY carrier_id.
+*
+*    DATA carriers TYPE tt_carriers.
+*
 * Example 1: APPEND with structured data object (work area)
 **********************************************************************
-
+*
 *    DATA connection  TYPE st_connection.
-    " Declare the work area with LIKE LINE OF
-    DATA connection LIKE LINE OF connections.
-
-
+*    " Declare the work area with LIKE LINE OF
+*    DATA connection LIKE LINE OF connections.
+*
+*
 *    connection-carrier_id       = 'NN'.
 *    connection-connection_id    = '1234'.
 *    connection-airport_from_id  = 'ABC'.
 *    connection-airport_to_id    = 'XYZ'.
 *    connection-carrier_name     = 'My Airline'.
-
-    " Use VALUE #( ) instead assignment to individual components
-    connection = VALUE #( carrier_id       = 'NN'
-                          connection_id    = '1234'
-                          airport_from_id  = 'ABC'
-                          airport_to_id    = 'XYZ'
-                          carrier_name     = 'My Airline' ).
-
-    APPEND connection TO connections.
-
-    out->write(  `--------------------------------` ).
-    out->write(  `Example 1: APPEND with Work Area` ).
-    out->write(  connections ).
-
+*
+*    " Use VALUE #( ) instead assignment to individual components
+*    connection = VALUE #( carrier_id       = 'NN'
+*                          connection_id    = '1234'
+*                          airport_from_id  = 'ABC'
+*                          airport_to_id    = 'XYZ'
+*                          carrier_name     = 'My Airline' ).
+*
+*    APPEND connection TO connections.
+*
+*    out->write(  `--------------------------------` ).
+*    out->write(  `Example 1: APPEND with Work Area` ).
+*    out->write(  connections ).
+*
 * Example 2: APPEND with VALUE #( ) expression
 **********************************************************************
-
-    APPEND VALUE #( carrier_id       = 'NN'
-                    connection_id    = '1234'
-                    airport_from_id  = 'ABC'
-                    airport_to_id    = 'XYZ'
-                    carrier_name     = 'My Airline'
-                  )
-       TO connections.
-
-    out->write(  `----------------------------` ).
-    out->write(  `Example 2: Append with VALUE` ).
-    out->write(  connections ).
-
+*
+*    APPEND VALUE #( carrier_id       = 'NN'
+*                    connection_id    = '1234'
+*                    airport_from_id  = 'ABC'
+*                    airport_to_id    = 'XYZ'
+*                    carrier_name     = 'My Airline'
+*                  )
+*       TO connections.
+*
+*    out->write(  `----------------------------` ).
+*    out->write(  `Example 2: Append with VALUE` ).
+*    out->write(  connections ).
+*
 * Example 3: Filling an Internal Table with Several Rows
 **********************************************************************
-
-    carriers = VALUE #(  (  carrier_id = 'AA' carrier_name = 'American Airlines' )
-                         (  carrier_id = 'JL' carrier_name = 'Japan Airlines'    )
-                         (  carrier_id = 'SQ' carrier_name = 'Singapore Airlines')
-                      ).
-
-    out->write(  `-----------------------------------------` ).
-    out->write(  `Example 3: Fill Internal Table with VALUE` ).
-    out->write(  carriers ).
-
+*
+*    carriers = VALUE #(  (  carrier_id = 'AA' carrier_name = 'American Airlines' )
+*                         (  carrier_id = 'JL' carrier_name = 'Japan Airlines'    )
+*                         (  carrier_id = 'SQ' carrier_name = 'Singapore Airlines')
+*                      ).
+*
+*    out->write(  `-----------------------------------------` ).
+*    out->write(  `Example 3: Fill Internal Table with VALUE` ).
+*    out->write(  carriers ).
+*
 * Example 4: Filling one Internal Table from Another
 **********************************************************************
+*
+*    connections = CORRESPONDING #( carriers ).
+*
+*    out->write(  `--------------------------------------------` ).
+*    out->write(  `Example 4: CORRESPONDING for Internal Tables` ).
+*    out->write(  data = carriers
+*                 name = `Source Table CARRIERS:`).
+*    out->write(  data = connections
+*                 name = `Target Table CONNECTIONS:`).
+*
 
-    connections = CORRESPONDING #( carriers ).
+***********************************************************
+*                                                         *
+* ACCESS TO COMPLEX TABLE TYPES                           *
+*                                                         *
+***********************************************************
 
-    out->write(  `--------------------------------------------` ).
-    out->write(  `Example 4: CORRESPONDING for Internal Tables` ).
-    out->write(  data = carriers
-                 name = `Source Table CARRIERS:`).
-    out->write(  data = connections
-                 name = `Target Table CONNECTIONS:`).
 
+*    TYPES: BEGIN OF st_connection,
+*             carrier_id      TYPE /dmo/carrier_id,
+*             connection_id   TYPE /dmo/connection_id,
+*             airport_from_id TYPE /dmo/airport_from_id,
+*             airport_to_id   TYPE /dmo/airport_to_id,
+*             carrier_name    TYPE /dmo/carrier_name,
+*           END OF st_connection.
+*
+*    TYPES tt_connections TYPE SORTED TABLE OF   st_connection
+*                              WITH NON-UNIQUE KEY carrier_id
+*                                                  connection_id.
+*
+*    DATA connections TYPE tt_connections.
+*    DATA connection  LIKE LINE OF connections.
+*
+*    TYPES: BEGIN OF st_carrier,
+*             carrier_id    TYPE /dmo/carrier_id,
+*             currency_code TYPE /dmo/currency_code,
+*           END OF st_carrier.
+*
+*    DATA carriers TYPE STANDARD TABLE OF st_carrier
+*                       WITH NON-UNIQUE KEY carrier_id.
+*
+*    DATA carrier LIKE LINE OF carriers.
+*
+** Preparation: Fill internal tables with data
+***********************************************************************
+*    connections = VALUE #(  ( carrier_id      = 'JL'
+*                              connection_id   = '0408'
+*                              airport_from_id = 'FRA'
+*                              airport_to_id   = 'NRT'
+*                              carrier_name    = 'Japan Airlines'
+*                            )
+*                            ( carrier_id      = 'AA'
+*                              connection_id   = '0017'
+*                              airport_from_id = 'MIA'
+*                              airport_to_id   = 'HAV'
+*                              carrier_name    = 'American Airlines'
+*                            )
+*                            ( carrier_id      = 'SQ'
+*                              connection_id   = '0001'
+*                              airport_from_id = 'SFO'
+*                              airport_to_id   = 'SIN'
+*                              carrier_name    = 'Singapore Airlines'
+*                            )
+*                            ( carrier_id      = 'UA'
+*                              connection_id   = '0078'
+*                              airport_from_id = 'SFO'
+*                              airport_to_id   = 'SIN'
+*                              carrier_name    = 'United Airlines'
+*                            )
+*                           ).
+*
+*    carriers = VALUE #(  (  carrier_id    = 'SQ'
+*                            currency_code = ' '
+*                         )
+*                         (  carrier_id    = 'JL'
+*                            currency_code = ' '
+*                         )
+*                         (  carrier_id    = 'AA'
+*                            currency_code = ' '
+*                         )
+*                         (  carrier_id    = 'UA'
+*                            currency_code = ' '
+*                         )
+*                      ).
+*
+** Example 1: Table Expression with Key Access
+***********************************************************************
+*    out->write(  `--------------------------------------------` ).
+*    out->write(  `Example 1: Table Expressions with Key Access` ).
+*
+*    out->write(  data = connections
+*                 name = `Internal Table CONNECTIONS: ` ).
+*
+*    " with key fields
+*    connection = connections[ carrier_id    = 'SQ'
+*                              connection_id = '0001' ].
+*
+*    out->write(  data = connection
+*                 name = `CARRIER_ID = 'SQ' AND CONNECTION_ID = '001':` ).
+*
+*    " with non-key fields
+*    connection = connections[ airport_from_id = 'SFO'
+*                              airport_to_id   = 'SIN' ].
+*    out->write(  data = connection
+*                 name = `AIRPORT_FROM_ID = 'SFO' AND AIRPORT_TO_ID = 'SIN':` ).
+*
+** Example 2: LOOP with key access
+***********************************************************************
+*
+*    out->write(  `-------------------------------` ).
+*    out->write(  `Example 2: LOOP with Key Access` ).
+*
+*    LOOP AT connections INTO connection
+*                       WHERE airport_from_id <> 'MIA'.
+*
+*      "do something with the content of connection
+*      out->write( data = connection
+*                  name = |This is row number { sy-tabix }: | ).
+*
+*    ENDLOOP.
+*
+** Example 3: MODIFY TABLE (key access)
+***********************************************************************
+*    out->write(  `-----------------------------------` ).
+*    out->write(  `Example 3: MODIFY TABLE (key access` ).
+*
+*    out->write(  data = carriers
+*                 name = `Table CARRRIERS before MODIFY TABLE:`).
+*
+*    carrier = carriers[  carrier_id = 'JL' ].
+*    carrier-currency_code = 'JPY'.
+*    MODIFY TABLE carriers FROM carrier.
+*
+*    out->write(  data = carriers
+*                 name = `Table CARRRIERS after MODIFY TABLE:`).
+*
+** Example 4: MODIFY (index access)
+***********************************************************************
+*    out->write(  `--------------------------------` ).
+*    out->write(  `Example 4: MODIFY (index access)` ).
+*
+*    carrier-carrier_id    = 'LH'.
+*    carrier-currency_code = 'EUR'.
+*    MODIFY carriers FROM carrier INDEX 1.
+*
+*    out->write(  data = carriers
+*                 name = `Table CARRRIERS after MODIFY:`).
+*
+** Example 5: MODIFY in a LOOP
+***********************************************************************
+*    out->write(  `----------------------------` ).
+*    out->write(  `Example 5: MODIFY  in a LOOP` ).
+*
+*    LOOP AT carriers INTO carrier
+*                    WHERE currency_code IS INITIAL.
+*
+*      carrier-currency_code = 'USD'.
+*      MODIFY carriers FROM carrier.
+*
+*    ENDLOOP.
+*
+*    out->write(  data = carriers
+*                 name = `Table CARRRIERS after the LOOP:`).
 
 
   ENDMETHOD.
